@@ -61,13 +61,19 @@ function generateTagsItem(){
 
 function generateDocumnet(){
     let itemsNow = Number(document.getElementById("number").value);
-    let hImages = Number(document.getElementById("numberH").value) ?? itemsNow;
+    let hImages = Number(document.getElementById("numberH").value);
+    let vImages;
     if(hImages > itemsNow) hImages = itemsNow;
     document.getElementById("numberH").value = hImages;
     if(hImages == ""){
         hImages = itemsNow;
+        document.getElementById("numberH").value = hImages;
     }
-    let vImages = itemsNow - hImages;
+    vImages = itemsNow - hImages;
+    if(hImages == "1.01"){
+        vImages = itemsNow;
+        document.getElementById("numberV").value = vImages;
+    }
     document.getElementById("numberV").value = vImages;
     let minTags = Number(document.getElementById("min").value);
     let maxTags = Number(document.getElementById("max").value);
