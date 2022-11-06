@@ -7,57 +7,57 @@ let items = [];
 let index = 0;
 document.getElementById("loading").style.display = "none";
 
-// function generateTags(totalTags){
-//     let tag;
-//     for(let i = 0; i < totalTags; i++){
-//         let r1 = Math.ceil(Math.random() * 15);
-//         let r2 = Math.ceil(Math.random() * 7);
-//         let r3 = Math.ceil(Math.random() * 5);
-//         let r4 = Math.ceil(Math.random() * 9);
-//         let r5 = Math.ceil(Math.random() * 17);
-//         // console.log(r1, r2, r3, r4, r5);
-//         tag = letters[r1] + letters[r2] + letters[r3] + letters[r4] + letters[r5];
-//         if(tags.includes(tag)){
-//             // Do nothing
-//             let random = Math.round(Math.random());
-//             if(random == 1){
-//                 tags.push(tag);
-//                 tags.concat(tag);
-//             }
-//         } else{ 
-//             tags.push(tag);
-//             tags.concat(tag);
-//             tags.push(tag);
-//             tags.concat(tag);
-//             items.push(tag);
-//         }
-//         if(totalTags < 2){
-//             return tag;
-//         }
-//     }
-// }
+function generateTags(totalTags){
+    let tag;
+    for(let i = 0; i < totalTags; i++){
+        let r1 = Math.ceil(Math.random() * 15);
+        let r2 = Math.ceil(Math.random() * 7);
+        let r3 = Math.ceil(Math.random() * 5);
+        let r4 = Math.ceil(Math.random() * 9);
+        let r5 = Math.ceil(Math.random() * 17);
+        // console.log(r1, r2, r3, r4, r5);
+        tag = letters[r1] + letters[r2] + letters[r3] + letters[r4] + letters[r5];
+        if(tags.includes(tag)){
+            // Do nothing
+            let random = Math.round(Math.random());
+            if(random == 1){
+                tags.push(tag);
+                tags.concat(tag);
+            }
+        } else{ 
+            tags.push(tag);
+            tags.concat(tag);
+            tags.push(tag);
+            tags.concat(tag);
+            items.push(tag);
+        }
+        if(totalTags < 2){
+            return tag;
+        }
+    }
+}
 
-// function generateType(){
-//     let type = ["H", "V"];
-//     let randomType = Math.round(Math.random());
-//     let selectedType = type[randomType];
-//     return selectedType;
-// }
+function generateType(){
+    let type = ["H", "V"];
+    let randomType = Math.round(Math.random());
+    let selectedType = type[randomType];
+    return selectedType;
+}
 
-// function generateTagsInsideItem(){
-//     let totalTags = Math.round(Math.random() * letters.length * 2.7);
-//     return totalTags;
-// }
+function generateTagsInsideItem(){
+    let totalTags = Math.round(Math.random() * letters.length * 2.7);
+    return totalTags;
+}
 
-// function generateTagsItem(){
-//     let totalTags = generateTagsInsideItem();
-//     let tags = "";
-//     for(let i = 0; i < totalTags; i++) {
-//         tags += " " + generateTags(1);
-//     }
-//     let text = generateType() + " " + totalTags + " " + tags;
-//     return text;
-// }
+function generateTagsItem(){
+    let totalTags = generateTagsInsideItem();
+    let tags = "";
+    for(let i = 0; i < totalTags; i++) {
+        tags += " " + generateTags(1);
+    }
+    let text = generateType() + " " + totalTags + " " + tags;
+    return text;
+}
 
 function generateDocumnet(){
     let itemsNow = Number(document.getElementById("number").value);
@@ -90,12 +90,17 @@ function generateDocumnet(){
         document.getElementById("min").value = minTags;
     }
 
-    if(itemsNow == "" || itemsNow < 200 || itemsNow > 5000000){
-        alert("Please enter a valid number, between 200 and 5,000,000.");
+    if(itemsNow == "" || itemsNow < 200 || itemsNow > 1000000){
+        alert("Please enter a valid number, between 200 and 1,000,000.");
         return false;
     }
 
-    startThreads(itemsNow, minTags, maxTags, hImages, vImages);
+    if(itemsNow > 35000){
+        startThreads(itemsNow, minTags, maxTags, hImages, vImages, 100);
+    }else {
+        startThreads(itemsNow, minTags, maxTags, hImages, vImages, 50);
+    }
+
     console.time();
 
 }
@@ -110,11 +115,13 @@ if (typeof(Worker) !== "undefined") {
     function startThreads(length, min, max, h, v, dif) {
         let ReturnedText = length;
         let prog = document.getElementById("progress");
+        
         prog.max = length;
-        //prog.value = 0;
+        prog.value = 0;
         document.getElementById("container").classList.add("hidden");
         document.getElementById("loading").style.display = "flex";
-        lengthV = Math.ceil(length / 100);
+        
+        lengthV = Math.ceil(length / dif);
         worker1 = new Worker("./worker.js")
         worker2 = new Worker("./worker.js")
         worker3 = new Worker("./worker.js")
@@ -164,7 +171,7 @@ if (typeof(Worker) !== "undefined") {
         worker47 = new Worker("./worker.js")
         worker48 = new Worker("./worker.js")
         worker49 = new Worker("./worker.js")
-        worker50 = new Worker("./worker.js")
+        worker50 = new Worker("./worker.js")  
         worker51 = new Worker("./worker.js")
         worker52 = new Worker("./worker.js")
         worker53 = new Worker("./worker.js")
@@ -318,6 +325,58 @@ if (typeof(Worker) !== "undefined") {
         worker99.onmessage = workerHasCompleted;
         worker100.onmessage = workerHasCompleted;
 
+        if(dif == 50){            
+        worker1.postMessage({id: 1,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker2.postMessage({id: 2,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker3.postMessage({id: 3,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker4.postMessage({id: 4,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker5.postMessage({id: 5,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker6.postMessage({id: 6,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker7.postMessage({id: 7,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker8.postMessage({id: 8,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker9.postMessage({id: 9,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker10.postMessage({id: 10,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker11.postMessage({id: 11,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker12.postMessage({id: 12,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker13.postMessage({id: 13,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker14.postMessage({id: 14,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker15.postMessage({id: 15,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker16.postMessage({id: 16,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker17.postMessage({id: 17,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker18.postMessage({id: 18,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker19.postMessage({id: 19,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker20.postMessage({id: 20,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker21.postMessage({id: 21,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker22.postMessage({id: 22,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker23.postMessage({id: 23,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker24.postMessage({id: 24,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker25.postMessage({id: 25,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker26.postMessage({id: 26,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker27.postMessage({id: 27,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker28.postMessage({id: 28,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker29.postMessage({id: 29,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker30.postMessage({id: 30,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker31.postMessage({id: 31,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker32.postMessage({id: 32,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker33.postMessage({id: 33,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker34.postMessage({id: 34,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker35.postMessage({id: 35,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker36.postMessage({id: 36,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker37.postMessage({id: 37,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker38.postMessage({id: 38,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker39.postMessage({id: 39,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker40.postMessage({id: 40,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker41.postMessage({id: 41,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker42.postMessage({id: 42,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker43.postMessage({id: 43,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker44.postMessage({id: 44,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker45.postMessage({id: 45,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker46.postMessage({id: 46,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker47.postMessage({id: 47,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker48.postMessage({id: 48,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker49.postMessage({id: 49,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker50.postMessage({id: 50,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+    } else {
         worker1.postMessage({id: 1,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
         worker2.postMessage({id: 2,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
         worker3.postMessage({id: 3,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
@@ -418,6 +477,7 @@ if (typeof(Worker) !== "undefined") {
         worker98.postMessage({id: 98,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
         worker99.postMessage({id: 99,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
         worker100.postMessage({id: 100,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+    }
     
 
         let doneWorkers = [];
@@ -481,257 +541,8 @@ if (typeof(Worker) !== "undefined") {
                 case 17:
                     worker17.terminate();
                     break;
-                case 18:
-                    worker18.terminate();
-                    break;
-                case 19:
-                    worker19.terminate();
-                    break;
-                case 20:
-                    worker20.terminate();
-                    break;
-                case 21:
-                    worker21.terminate();
-                    break;
-                case 22:
-                    worker22.terminate();
-                    break;
-                case 23:
-                    worker23.terminate();
-                    break;
-                case 24:
-                    worker24.terminate();
-                    break;
-                case 25:
-                    worker25.terminate();
-                    break;
-                case 26:
-                    worker26.terminate();
-                    break;
-                case 27:
-                    worker27.terminate();
-                    break;
-                case 28:
-                    worker28.terminate();
-                    break;
-                case 29:
-                    worker29.terminate();
-                    break;
-                case 30:
-                    worker30.terminate();
-                    break;
-                case 31:
-                    worker31.terminate();
-                    break;
-                case 32:
-                    worker32.terminate();
-                    break;
-                case 33:
-                    worker33.terminate();
-                    break;
-                case 34:
-                    worker34.terminate();
-                    break;
-                case 35:
-                    worker35.terminate();
-                    break;
-                case 36:
-                    worker36.terminate();
-                    break;
-                case 37:
-                    worker37.terminate();
-                    break;
-                case 38:
-                    worker38.terminate();
-                    break;
-                case 39:
-                    worker39.terminate();
-                    break;
-                case 40:
-                    worker40.terminate();
-                    break;
-                case 41:
-                    worker41.terminate();
-                    break;
-                case 42:
-                    worker42.terminate();
-                    break;
-                case 43:
-                    worker43.terminate();
-                    break;
-                case 44:
-                    worker44.terminate();
-                    break;
-                case 45:
-                    worker45.terminate();
-                    break;
-                case 46:
-                    worker46.terminate();
-                    break;
-                case 47:
-                    worker47.terminate();
-                    break;
-                case 48:
-                    worker48.terminate();
-                    break;
-                case 49:
-                    worker49.terminate();
-                    break;
-                case 50:
-                    worker50.terminate();
-                    break;
-                case 51:
-                    worker51.terminate();
-                    break;
-                case 52:
-                    worker52.terminate();
-                    break;
-                case 53:
-                    worker53.terminate();
-                    break;
-                case 54:
-                    worker54.terminate();
-                    break;
-                case 55:
-                    worker55.terminate();
-                    break;
-                case 56:
-                    worker56.terminate();
-                    break;
-                case 57:
-                    worker57.terminate();
-                    break;
-                case 58:
-                    worker58.terminate();
-                    break;
-                case 59:
-                    worker59.terminate();
-                    break;
-                case 60:
-                    worker60.terminate();
-                    break;
-                case 61:
-                    worker61.terminate();
-                    break;
-                case 62:
-                    worker62.terminate();
-                    break;
-                case 63:
-                    worker63.terminate();
-                    break;
-                case 64:
-                    worker64.terminate();
-                    break;
-                case 65:
-                    worker65.terminate();
-                    break;
-                case 66:
-                    worker66.terminate();
-                    break;
-                case 67:
-                    worker67.terminate();
-                    break;
-                case 68:
-                    worker68.terminate();
-                    break;
-                case 69:
-                    worker69.terminate();
-                    break;
-                case 70:
-                    worker70.terminate();
-                    break;
-                case 71:
-                    worker71.terminate();
-                    break;
-                case 72:
-                    worker72.terminate();
-                    break;
-                case 73:
-                    worker73.terminate();
-                    break;
-                case 74:
-                    worker74.terminate();
-                    break;
-                case 75:
-                    worker75.terminate();
-                    break;
-                case 76:
-                    worker76.terminate();
-                    break;
-                case 77:
-                    worker77.terminate();
-                    break;
-                case 78:
-                    worker78.terminate();
-                    break;
-                case 79:
-                    worker79.terminate();
-                    break;
-                case 80:
-                    worker80.terminate();
-                    break;
-                case 81:
-                    worker81.terminate();
-                    break;
-                case 82:
-                    worker82.terminate();
-                    break;
-                case 83:
-                    worker83.terminate();
-                    break;
-                case 84:
-                    worker84.terminate();
-                    break;
-                case 85:
-                    worker85.terminate();
-                    break;
-                case 86:
-                    worker86.terminate();
-                    break;
-                case 87:
-                    worker87.terminate();
-                    break;
-                case 88:
-                    worker88.terminate();
-                    break;
-                case 89:
-                    worker89.terminate();
-                    break;
-                case 90:
-                    worker90.terminate();
-                    break;
-                case 91:
-                    worker91.terminate();
-                    break;
-                case 92:
-                    worker92.terminate();
-                    break;
-                case 93:
-                    worker93.terminate();
-                    break;
-                case 94:
-                    worker94.terminate();
-                    break;
-                case 95:
-                    worker95.terminate();
-                    break;
-                case 96:
-                    worker96.terminate();
-                    break;
-                case 97:
-                    worker97.terminate();
-                    break;
-                case 98:
-                    worker98.terminate();
-                    break;
-                case 99:
-                    worker99.terminate();
-                    break;
-                case 100:
-                    worker100.terminate();
-                    break;
             }
-            if (doneWorkers.length === 100){
+            if (doneWorkers.length === dif){
                 const blob = new Blob([ReturnedText], {type: "text/plain"});
                 const fileUrl = URL.createObjectURL(blob);
                 const link = document.createElement("a");
