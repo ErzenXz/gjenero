@@ -5,6 +5,7 @@ let letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", 
 let tags = [];
 let items = [];
 let index = 0;
+document.getElementById("loading").style.display = "none";
 
 function generateTags(totalTags){
     let tag;
@@ -60,22 +61,36 @@ function generateTagsItem(){
 
 function generateDocumnet(){
     let itemsNow = Number(document.getElementById("number").value);
-    if(itemsNow == "" || itemsNow < 50 || itemsNow > 150000){
-        alert("Please enter a valid number, between 50 and 150000.");
+    let hImages = Number(document.getElementById("numberH").value) ?? itemsNow;
+    if(hImages > itemsNow) hImages = itemsNow;
+    document.getElementById("numberH").value = hImages;
+    if(hImages == ""){
+        hImages = itemsNow;
+    }
+    let vImages = itemsNow - hImages;
+    document.getElementById("numberV").value = vImages;
+    let minTags = Number(document.getElementById("min").value);
+    let maxTags = Number(document.getElementById("max").value);
+
+    if(minTags == "" || maxTags == ""){
+        minTags = 1;
+        maxTags = 80;
+        document.getElementById("min").value = minTags;
+        document.getElementById("max").value = maxTags;
+    }
+
+    if(minTags > maxTags){
+        minTags = 1;
+        document.getElementById("min").value = minTags;
+    }
+
+    if(itemsNow == "" || itemsNow < 50 || itemsNow > 500000){
+        alert("Please enter a valid number, between 50 and 500000.");
         return false;
     }
-    startThreads(itemsNow);
-    // // let totalItems = itemsNow;
-    // // let text = "<br>" + totalItems;
-    // // for(let i = 0; i < totalItems; i++){
-    // //     text += "<br>" + generateTagsItem();
-    // // }
-    // // const blob = new Blob([text], {type: "text/html"});
-    // // const fileUrl = URL.createObjectURL(blob);
-    // // const link = document.createElement("a");
-    // // link.download = new Date().getTime();
-    // // link.href = fileUrl;
-    // // link.click();
+    startThreads(itemsNow, minTags, maxTags, hImages, vImages);
+    console.time();
+
 }
 
 let response;
@@ -85,12 +100,14 @@ let response;
 if (typeof(Worker) !== "undefined") {
     // Web worker support!
 
-    function startThreads(length) {
+    function startThreads(length, min, max, h, v) {
         let ReturnedText = length;
         let prog = document.getElementById("progress");
         
         prog.max = length;
         prog.value = 0;
+        document.getElementById("container").classList.add("hidden");
+        document.getElementById("loading").style.display = "flex";
         
         lengthV = Math.ceil(length / 50);
 
@@ -198,56 +215,56 @@ if (typeof(Worker) !== "undefined") {
         worker49.onmessage = workerHasCompleted;
         worker50.onmessage = workerHasCompleted;
 
-        worker1.postMessage({id: 1,count: lengthV});
-        worker2.postMessage({id: 2,count: lengthV});
-        worker3.postMessage({id: 3,count: lengthV});
-        worker4.postMessage({id: 4,count: lengthV});
-        worker5.postMessage({id: 5,count: lengthV});
-        worker6.postMessage({id: 6,count: lengthV});
-        worker7.postMessage({id: 7,count: lengthV});
-        worker8.postMessage({id: 8,count: lengthV});
-        worker9.postMessage({id: 9,count: lengthV});
-        worker10.postMessage({id: 10,count: lengthV});
-        worker11.postMessage({id: 11,count: lengthV});
-        worker12.postMessage({id: 12,count: lengthV});
-        worker13.postMessage({id: 13,count: lengthV});
-        worker14.postMessage({id: 14,count: lengthV});
-        worker15.postMessage({id: 15,count: lengthV});
-        worker16.postMessage({id: 16,count: lengthV});
-        worker17.postMessage({id: 17,count: lengthV});
-        worker18.postMessage({id: 18,count: lengthV});
-        worker19.postMessage({id: 19,count: lengthV});
-        worker20.postMessage({id: 20,count: lengthV});
-        worker21.postMessage({id: 21,count: lengthV});
-        worker22.postMessage({id: 22,count: lengthV});
-        worker23.postMessage({id: 23,count: lengthV});
-        worker24.postMessage({id: 24,count: lengthV});
-        worker25.postMessage({id: 25,count: lengthV});
-        worker26.postMessage({id: 26,count: lengthV});
-        worker27.postMessage({id: 27,count: lengthV});
-        worker28.postMessage({id: 28,count: lengthV});
-        worker29.postMessage({id: 29,count: lengthV});
-        worker30.postMessage({id: 30,count: lengthV});
-        worker31.postMessage({id: 31,count: lengthV});
-        worker32.postMessage({id: 32,count: lengthV});
-        worker33.postMessage({id: 33,count: lengthV});
-        worker34.postMessage({id: 34,count: lengthV});
-        worker35.postMessage({id: 35,count: lengthV});
-        worker36.postMessage({id: 36,count: lengthV});
-        worker37.postMessage({id: 37,count: lengthV});
-        worker38.postMessage({id: 38,count: lengthV});
-        worker39.postMessage({id: 39,count: lengthV});
-        worker40.postMessage({id: 40,count: lengthV});
-        worker41.postMessage({id: 41,count: lengthV});
-        worker42.postMessage({id: 42,count: lengthV});
-        worker43.postMessage({id: 43,count: lengthV});
-        worker44.postMessage({id: 44,count: lengthV});
-        worker45.postMessage({id: 45,count: lengthV});
-        worker46.postMessage({id: 46,count: lengthV});
-        worker47.postMessage({id: 47,count: lengthV});
-        worker48.postMessage({id: 48,count: lengthV});
-        worker49.postMessage({id: 49,count: lengthV});
-        worker50.postMessage({id: 50,count: lengthV});
+        worker1.postMessage({id: 1,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker2.postMessage({id: 2,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker3.postMessage({id: 3,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker4.postMessage({id: 4,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker5.postMessage({id: 5,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker6.postMessage({id: 6,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker7.postMessage({id: 7,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker8.postMessage({id: 8,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker9.postMessage({id: 9,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker10.postMessage({id: 10,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker11.postMessage({id: 11,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker12.postMessage({id: 12,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker13.postMessage({id: 13,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker14.postMessage({id: 14,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker15.postMessage({id: 15,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker16.postMessage({id: 16,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker17.postMessage({id: 17,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker18.postMessage({id: 18,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker19.postMessage({id: 19,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker20.postMessage({id: 20,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker21.postMessage({id: 21,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker22.postMessage({id: 22,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker23.postMessage({id: 23,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker24.postMessage({id: 24,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker25.postMessage({id: 25,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker26.postMessage({id: 26,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker27.postMessage({id: 27,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker28.postMessage({id: 28,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker29.postMessage({id: 29,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker30.postMessage({id: 30,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker31.postMessage({id: 31,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker32.postMessage({id: 32,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker33.postMessage({id: 33,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker34.postMessage({id: 34,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker35.postMessage({id: 35,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker36.postMessage({id: 36,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker37.postMessage({id: 37,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker38.postMessage({id: 38,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker39.postMessage({id: 39,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker40.postMessage({id: 40,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker41.postMessage({id: 41,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker42.postMessage({id: 42,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker43.postMessage({id: 43,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker44.postMessage({id: 44,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker45.postMessage({id: 45,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker46.postMessage({id: 46,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker47.postMessage({id: 47,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker48.postMessage({id: 48,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker49.postMessage({id: 49,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker50.postMessage({id: 50,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
     
 
         let doneWorkers = [];
@@ -298,6 +315,9 @@ if (typeof(Worker) !== "undefined") {
                 link.download = new Date().getTime();
                 link.href = fileUrl;
                 link.click();
+                document.getElementById("container").classList.remove("hidden");
+                document.getElementById("loading").style.display = "none";
+                console.timeEnd();
             }   
         }
 

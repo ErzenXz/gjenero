@@ -7,17 +7,34 @@
     <title>Gjenero</title>
     <script defer src="app.js"></script>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <main class="container">
-
-        <input type="number" name="number" id="number" min="50" max="100000" placeholder="Numri i rreshtave" required>
+    <main class="container" id="container">
+        <label for="number">Total images</label>
+        <input type="number" name="number" id="number" min="50" max="500000" placeholder="Total images" required>
+        <label for="numberH">Horizontal images</label>
+        <input type="number" name="number" id="numberH" min="50" max="500000" placeholder="Horizontal images" required>
+        <label for="numberV">Vertical images</label>
+        <input type="number" name="number" id="numberV" min="50" max="500000" placeholder="Vertical images" required readonly>
+        <label for="min">Min tags</label>
+        <input type="number" name="number" id="min" min="1" max="100" placeholder="Min tags" required>
+        <label for="max">Max tags</label>
+        <input type="number" name="number" id="max" min="1" max="100" placeholder="Max tags" required>
         <button type="submit" onclick="generateDocumnet()">Gjenero</button>
     </main>
-    
-    <progress id="progress" min="0" max="100" value="0"></progress>
-    <p>Beta 2</p>
+
+    <div class="loading" id="loading">
+        <h2>Generating...</h2>
+        <p>Play this game while you wait.</p>
+        <progress id="progress" min="0" max="100" value="0"></progress>
+        <iframe src="https://s.apps.erzen.tk/memory/" frameborder="0" width="100%" height="100%"></iframe>
+    </div>
+    <br>
+    <p>Beta 3</p>
     <pre>ErzenK           All rights reserved         2022©</pre>
 </body>
 </html>
