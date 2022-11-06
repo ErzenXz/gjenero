@@ -84,8 +84,8 @@ function generateDocumnet(){
         document.getElementById("min").value = minTags;
     }
 
-    if(itemsNow == "" || itemsNow < 50 || itemsNow > 500000){
-        alert("Please enter a valid number, between 50 and 500000.");
+    if(itemsNow == "" || itemsNow < 100 || itemsNow > 1000000){
+        alert("Please enter a valid number, between 100 and 1,000,000.");
         return false;
     }
     startThreads(itemsNow, minTags, maxTags, hImages, vImages);

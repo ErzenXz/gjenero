@@ -53,51 +53,38 @@ function generateTags(totalTags){
     }
 }
 
-// ! Needs to be fixed;
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; --i) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+  
+function generate(hs, vs) {
+    var a = new Array(hs + vs)
+      .fill('H', 0, hs)
+      .fill('V', hs, hs + vs);
+    shuffle(a);
+  
+    var i = 0;
+    return () => a[i++];
+}
+
+let type = "";
 
 function generateType2(h7, v7) {
-    let type = ["H", "V"];
-    let randomType = Math.round(Math.random());
-    let selectedType = type[randomType];
-    if(selectedType == "H"){
-        totalH += 1;
-        if(totalH >= h7){
-            selectedType = "V";
-        } else {
-            selectedType = "H";
-        }
-    } else if(selectedType == "V"){
-        totalV += 1;
-        if(totalV >= v7){
-            selectedType = "H";
-        } else {
-            selectedType = "V";
-        }
-    }
-    return selectedType;
+    let returnType = type();
+    return returnType;
 }
 
-function generateType(h5, v5){
-    let type = ["H", "V"];
-    let randomType = Math.round(Math.random());
-    let selectedType = type[randomType];
-    // if(selectedType == "H"){
-    //     totalH += 1
-    // } else {
-    //     totalV += 1;
-    // }
+console.log(type);
 
-    // if(totalH >= h5 && totalV < v5){
-    //     selectedType = "V";
-    //     console.log("TOTAL H: " + totalH);
-    // }
-    
-    // if(totalV >= v5 && totalH < h5){
-    //     selectedType = "H";
-    //     console.log("TOTAL V: " + totalV);
-    // }
-    return selectedType;
-}
+// // function generateType(h5, v5){
+// //     let type = ["H", "V"];
+// //     let randomType = Math.round(Math.random());
+// //     let selectedType = type[randomType];
+// //     return selectedType;
+// // }
 
 function getRandomInt(min, max) {
     let minB, maxB;
@@ -117,7 +104,7 @@ function generateTagsItem(h4, v4){
     for(let i = 0; i < totalTags; i++) {
         tags += " " + generateTags(1);
     }
-    let text = generateType(h4, v4) + " " + totalTags + " " + tags;
+    let text = generateType2(h4, v4) + " " + totalTags + " " + tags;
     return text;
 }
 
@@ -133,6 +120,7 @@ function generateDocumnet(id, items, horizontal, vertical) {
 
 self.addEventListener("message", function(e) {
     saveDATA(e.data.minimum, e.data.maximum, e.data.horizontal, e.data.vertical);
+    type = generate(e.data.horizontal, e.data.vertical);
     generateDocumnet(e.data.id, e.data.count, e.data.horizontal, e.data.vertical);
     this.postMessage({id: e.data.id , result: textBack});
 }, false);
