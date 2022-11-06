@@ -37,11 +37,12 @@ input[type="number"]{
     width: 70%;
     height: 50px;
     border-radius: 12px;
-    border: 2.2px solid lightgrey;
+    border: 2px solid lightgrey;
     padding: 15px;
     font-size: 18px;
     outline: none;
     margin-left: 12.5%;
+    transition: all 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 input[type="number"]:focus {
@@ -82,4 +83,20 @@ button:active {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+
+input:read-only {
+    border-style: dotted;
+    cursor: not-allowed;
+    color: #777;
+}
+
+input:disabled {
+    background-color: #f0f2f5;
+}
+
+::selection {
+	color: #000;
+	background-color: #c1daf3;
 }
