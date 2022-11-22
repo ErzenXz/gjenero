@@ -1,67 +1,12 @@
-
-
-let letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q","r", "s", "t", "u", "v", "w", "x", "y", "z"];
-
-let tags = [];
-let items = [];
-let index = 0;
 document.getElementById("loading").style.display = "none";
 
-// function generateTags(totalTags){
-//     let tag;
-//     for(let i = 0; i < totalTags; i++){
-//         let r1 = Math.ceil(Math.random() * 15);
-//         let r2 = Math.ceil(Math.random() * 7);
-//         let r3 = Math.ceil(Math.random() * 5);
-//         let r4 = Math.ceil(Math.random() * 9);
-//         let r5 = Math.ceil(Math.random() * 17);
-//         // console.log(r1, r2, r3, r4, r5);
-//         tag = letters[r1] + letters[r2] + letters[r3] + letters[r4] + letters[r5];
-//         if(tags.includes(tag)){
-//             // Do nothing
-//             let random = Math.round(Math.random());
-//             if(random == 1){
-//                 tags.push(tag);
-//                 tags.concat(tag);
-//             }
-//         } else{ 
-//             tags.push(tag);
-//             tags.concat(tag);
-//             tags.push(tag);
-//             tags.concat(tag);
-//             items.push(tag);
-//         }
-//         if(totalTags < 2){
-//             return tag;
-//         }
-//     }
-// }
-
-// function generateType(){
-//     let type = ["H", "V"];
-//     let randomType = Math.round(Math.random());
-//     let selectedType = type[randomType];
-//     return selectedType;
-// }
-
-// function generateTagsInsideItem(){
-//     let totalTags = Math.round(Math.random() * letters.length * 2.7);
-//     return totalTags;
-// }
-
-// function generateTagsItem(){
-//     let totalTags = generateTagsInsideItem();
-//     let tags = "";
-//     for(let i = 0; i < totalTags; i++) {
-//         tags += " " + generateTags(1);
-//     }
-//     let text = generateType() + " " + totalTags + " " + tags;
-//     return text;
-// }
+let start, end, time;
 
 function generateDocumnet(){
     let itemsNow = Number(document.getElementById("number").value);
     let hImages = Number(document.getElementById("numberH").value);
+    let tagLetters = Number(document.getElementById("letters").value);
+    let uniqueTags = Number(document.getElementById("unique").value);
     let vImages;
     if(hImages > itemsNow) hImages = itemsNow;
     document.getElementById("numberH").value = hImages;
@@ -73,6 +18,14 @@ function generateDocumnet(){
     if(hImages == "1.01"){
         vImages = itemsNow;
         document.getElementById("numberV").value = vImages;
+    }
+    if(uniqueTags == ""){
+        uniqueTags = 50;
+        document.getElementById("unique").value = uniqueTags;
+    }
+    if(tagLetters == ""){
+        tagLetters = 4;
+        document.getElementById("letters").value = tagLetters;
     }
     document.getElementById("numberV").value = vImages;
     let minTags = Number(document.getElementById("min").value);
@@ -90,31 +43,49 @@ function generateDocumnet(){
         document.getElementById("min").value = minTags;
     }
 
-    if(itemsNow == "" || itemsNow < 200 || itemsNow > 5000000){
-        alert("Please enter a valid number, between 200 and 5,000,000.");
+    if(itemsNow == "" || itemsNow < 500 || itemsNow > 5000000){
+        alert("Please enter a valid number, between 500 and 5,000,000.");
         return false;
     }
 
-    startThreads(itemsNow, minTags, maxTags, hImages, vImages);
+    startThreads(itemsNow, minTags, maxTags, hImages, vImages, tagLetters, uniqueTags);
     console.time();
-
+    start = Date.now();
 }
 
 let response;
+
+
+function perqind(num, amount){
+    return num * amount / 100;
+}  
 
 // Web Worker Setup
 
 if (typeof(Worker) !== "undefined") {
     // Web worker support!
 
-    function startThreads(length, min, max, h, v, dif) {
+    function startThreads(length, min, max, h, v, letters, unique) {
         let ReturnedText = length;
         let prog = document.getElementById("progress");
         prog.max = length;
+        if(prog.value != undefined || prog.value != null) {
+            prog.value = 0;
+        }
         //prog.value = 0;
         document.getElementById("container").classList.add("hidden");
         document.getElementById("loading").style.display = "flex";
-        lengthV = Math.ceil(length / 100);
+        let lengthV = Math.ceil(length / 100);
+        let uniqueTags = perqind(lengthV, unique);
+
+        Swal.fire({
+            position: 'top-end',
+            icon: 'info',
+            title: 'Generating tags...',
+            showConfirmButton: false,
+            timer: 1500
+        });
+
         worker1 = new Worker("./worker.js")
         worker2 = new Worker("./worker.js")
         worker3 = new Worker("./worker.js")
@@ -318,106 +289,106 @@ if (typeof(Worker) !== "undefined") {
         worker99.onmessage = workerHasCompleted;
         worker100.onmessage = workerHasCompleted;
 
-        worker1.postMessage({id: 1,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker2.postMessage({id: 2,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker3.postMessage({id: 3,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker4.postMessage({id: 4,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker5.postMessage({id: 5,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker6.postMessage({id: 6,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker7.postMessage({id: 7,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker8.postMessage({id: 8,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker9.postMessage({id: 9,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker10.postMessage({id: 10,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker11.postMessage({id: 11,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker12.postMessage({id: 12,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker13.postMessage({id: 13,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker14.postMessage({id: 14,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker15.postMessage({id: 15,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker16.postMessage({id: 16,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker17.postMessage({id: 17,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker18.postMessage({id: 18,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker19.postMessage({id: 19,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker20.postMessage({id: 20,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker21.postMessage({id: 21,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker22.postMessage({id: 22,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker23.postMessage({id: 23,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker24.postMessage({id: 24,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker25.postMessage({id: 25,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker26.postMessage({id: 26,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker27.postMessage({id: 27,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker28.postMessage({id: 28,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker29.postMessage({id: 29,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker30.postMessage({id: 30,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker31.postMessage({id: 31,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker32.postMessage({id: 32,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker33.postMessage({id: 33,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker34.postMessage({id: 34,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker35.postMessage({id: 35,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker36.postMessage({id: 36,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker37.postMessage({id: 37,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker38.postMessage({id: 38,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker39.postMessage({id: 39,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker40.postMessage({id: 40,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker41.postMessage({id: 41,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker42.postMessage({id: 42,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker43.postMessage({id: 43,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker44.postMessage({id: 44,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker45.postMessage({id: 45,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker46.postMessage({id: 46,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker47.postMessage({id: 47,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker48.postMessage({id: 48,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker49.postMessage({id: 49,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker50.postMessage({id: 50,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker51.postMessage({id: 51,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker52.postMessage({id: 52,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker53.postMessage({id: 53,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker54.postMessage({id: 54,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker55.postMessage({id: 55,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker56.postMessage({id: 56,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker57.postMessage({id: 57,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker58.postMessage({id: 58,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker59.postMessage({id: 59,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker60.postMessage({id: 60,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker61.postMessage({id: 61,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker62.postMessage({id: 62,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker63.postMessage({id: 63,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker64.postMessage({id: 64,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker65.postMessage({id: 65,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker66.postMessage({id: 66,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker67.postMessage({id: 67,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker68.postMessage({id: 68,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker69.postMessage({id: 69,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker70.postMessage({id: 70,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker71.postMessage({id: 71,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker72.postMessage({id: 72,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker73.postMessage({id: 73,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker74.postMessage({id: 74,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker75.postMessage({id: 75,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker76.postMessage({id: 76,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker77.postMessage({id: 77,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker78.postMessage({id: 78,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker79.postMessage({id: 79,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker80.postMessage({id: 80,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker81.postMessage({id: 81,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker82.postMessage({id: 82,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker83.postMessage({id: 83,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker84.postMessage({id: 84,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker85.postMessage({id: 85,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker86.postMessage({id: 86,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker87.postMessage({id: 87,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker88.postMessage({id: 88,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker89.postMessage({id: 89,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker90.postMessage({id: 90,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker91.postMessage({id: 91,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker92.postMessage({id: 92,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker93.postMessage({id: 93,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker94.postMessage({id: 94,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker95.postMessage({id: 95,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker96.postMessage({id: 96,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker97.postMessage({id: 97,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker98.postMessage({id: 98,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker99.postMessage({id: 99,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
-        worker100.postMessage({id: 100,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v});
+        worker1.postMessage({id: 1,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker2.postMessage({id: 2,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker3.postMessage({id: 3,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker4.postMessage({id: 4,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker5.postMessage({id: 5,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker6.postMessage({id: 6,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker7.postMessage({id: 7,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker8.postMessage({id: 8,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker9.postMessage({id: 9,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker10.postMessage({id: 10,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker11.postMessage({id: 11,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker12.postMessage({id: 12,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker13.postMessage({id: 13,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker14.postMessage({id: 14,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker15.postMessage({id: 15,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker16.postMessage({id: 16,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker17.postMessage({id: 17,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker18.postMessage({id: 18,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker19.postMessage({id: 19,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker20.postMessage({id: 20,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker21.postMessage({id: 21,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker22.postMessage({id: 22,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker23.postMessage({id: 23,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker24.postMessage({id: 24,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker25.postMessage({id: 25,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker26.postMessage({id: 26,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker27.postMessage({id: 27,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker28.postMessage({id: 28,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker29.postMessage({id: 29,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker30.postMessage({id: 30,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker31.postMessage({id: 31,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker32.postMessage({id: 32,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker33.postMessage({id: 33,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker34.postMessage({id: 34,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker35.postMessage({id: 35,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker36.postMessage({id: 36,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker37.postMessage({id: 37,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker38.postMessage({id: 38,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker39.postMessage({id: 39,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker40.postMessage({id: 40,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker41.postMessage({id: 41,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker42.postMessage({id: 42,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker43.postMessage({id: 43,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker44.postMessage({id: 44,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker45.postMessage({id: 45,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker46.postMessage({id: 46,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker47.postMessage({id: 47,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker48.postMessage({id: 48,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker49.postMessage({id: 49,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker50.postMessage({id: 50,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker51.postMessage({id: 51,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker52.postMessage({id: 52,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker53.postMessage({id: 53,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker54.postMessage({id: 54,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker55.postMessage({id: 55,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker56.postMessage({id: 56,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker57.postMessage({id: 57,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker58.postMessage({id: 58,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker59.postMessage({id: 59,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker60.postMessage({id: 60,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker61.postMessage({id: 61,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker62.postMessage({id: 62,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker63.postMessage({id: 63,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker64.postMessage({id: 64,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker65.postMessage({id: 65,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker66.postMessage({id: 66,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker67.postMessage({id: 67,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker68.postMessage({id: 68,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker69.postMessage({id: 69,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker70.postMessage({id: 70,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker71.postMessage({id: 71,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker72.postMessage({id: 72,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker73.postMessage({id: 73,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker74.postMessage({id: 74,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker75.postMessage({id: 75,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker76.postMessage({id: 76,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker77.postMessage({id: 77,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker78.postMessage({id: 78,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker79.postMessage({id: 79,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker80.postMessage({id: 80,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker81.postMessage({id: 81,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker82.postMessage({id: 82,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker83.postMessage({id: 83,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker84.postMessage({id: 84,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker85.postMessage({id: 85,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker86.postMessage({id: 86,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker87.postMessage({id: 87,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker88.postMessage({id: 88,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker89.postMessage({id: 89,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker90.postMessage({id: 90,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker91.postMessage({id: 91,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker92.postMessage({id: 92,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker93.postMessage({id: 93,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker94.postMessage({id: 94,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker95.postMessage({id: 95,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker96.postMessage({id: 96,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker97.postMessage({id: 97,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker98.postMessage({id: 98,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker99.postMessage({id: 99,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
+        worker100.postMessage({id: 100,count: lengthV, minimum: min, maximum: max, horizontal: h, vertical: v, lett: letters, unique: uniqueTags});
     
 
         let doneWorkers = [];
@@ -741,6 +712,9 @@ if (typeof(Worker) !== "undefined") {
                 document.getElementById("container").classList.remove("hidden");
                 document.getElementById("loading").style.display = "none";
                 console.timeEnd();
+                end = Date.now();
+                time = (end - start) / 1000;
+                Swal.fire("Generated successfully in " + time + " seconds.");
             }   
         }
 
@@ -748,4 +722,5 @@ if (typeof(Worker) !== "undefined") {
     
   } else {
     // No Web Worker support..
+    alert("Your browser does not support the Web Worker. Please upgrade to Chrome or Firefox!")
   }
