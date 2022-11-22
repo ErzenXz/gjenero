@@ -15,8 +15,8 @@ let c = 0;
 function saveDATA(min, max, h, v){
     minA = min;
     maxA = max;
-    hA = Math.round(h / 100);
-    vA = Math.round(v / 100);
+    hA = Number(h);
+    vA = Number(v);
 }
 
 function generateTags(length) {
@@ -88,8 +88,8 @@ function generateTagsItem(h4, v4){
 }
 
 function generateDocumnet(id, items, horizontal, vertical , dif, lettersItem, uniqueT) {
-    hA = Math.round(Number(horizontal) / 100);
-    vA = Math.round(Number(vertical) / 100);
+    hA = Number(horizontal);
+    vA = Number(vertical);
     let totalItems = items;
     lettersN += lettersItem;
     unique += uniqueT;
