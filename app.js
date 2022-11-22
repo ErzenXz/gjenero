@@ -1,6 +1,7 @@
 document.getElementById("loading").style.display = "none";
 
 let start, end, time;
+let nameOfGenerated, nameOfHorizontal, nameOfVertical;
 
 function generateDocumnet(){
     let itemsNow = Number(document.getElementById("number").value);
@@ -703,10 +704,13 @@ if (typeof(Worker) !== "undefined") {
                     break;
             }
             if (doneWorkers.length === 100){
+                nameOfGenerated = numeral(length).format('0a');
+                nameOfHorizontal = numeral(h).format("0a");
+                nameOfVertical = numeral(v).format("0a");
                 const blob = new Blob([ReturnedText], {type: "text/plain"});
                 const fileUrl = URL.createObjectURL(blob);
                 const link = document.createElement("a");
-                link.download = new Date().getTime();
+                link.download = `P${nameOfGenerated}_H${nameOfHorizontal}_V${nameOfVertical}`;
                 link.href = fileUrl;
                 link.click();
                 document.getElementById("container").classList.remove("hidden");
