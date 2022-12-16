@@ -749,7 +749,11 @@ if (typeof(Worker) !== "undefined") {
                 nameOfGenerated = numeral(length).format('0a');
                 nameOfHorizontal = numeral(h).format("0a");
                 nameOfVertical = numeral(v).format("0a");
-                const blob = new Blob([ReturnedText], {type: "text/plain"});
+                console.log("OLD" + ReturnedText);
+                let text = shuffleLines(ReturnedText);
+                console.log("NEW" + text);
+
+                const blob = new Blob([text], {type: "text/plain"});
                 const fileUrl = URL.createObjectURL(blob);
                 const link = document.createElement("a");
                 link.download = `P${nameOfGenerated}_H${nameOfHorizontal}_V${nameOfVertical}`;
@@ -774,3 +778,25 @@ if (typeof(Worker) !== "undefined") {
     // No Web Worker support..
     alert("Your browser does not support the Web Worker. Please upgrade to Chrome or Firefox!")
   }
+
+
+  function shuffleLines(input) {
+    // Split the input into an array of lines
+    const lines = input.split('\n');
+  
+    // Remove the first line from the array
+    const firstLine = lines.shift();
+  
+    // Shuffle the remaining lines
+    for (let i = lines.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [lines[i], lines[j]] = [lines[j], lines[i]];
+    }
+  
+    // Add the first line back to the beginning of the array
+    lines.unshift(firstLine);
+  
+    // Join the lines back into a single string and return it
+    return lines.join('\n');
+  }
+  
