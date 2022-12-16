@@ -25,9 +25,33 @@ function split(x, n, array) {
    }
 }
 
+function fastGEN(items){
+    let array = [];
+    split(items, 2, array);
+    let h = array[0];
+    let v = array[1];
+    let tagsMIN = 10;
+    let tagsMAX = 20;
+    let unique = 50;
+    let tagLetters = 4;
 
+    document.getElementById("number").value = items;
+    document.getElementById("numberH").value = h;
+    document.getElementById("letters").value = tagLetters;
+    document.getElementById("unique").value = unique;
+    document.getElementById("min").value = tagsMIN;
+    document.getElementById("max").value = tagsMAX;
+    generateDocumnet();
+}
+
+let running = false;
 
 function generateDocumnet(){
+
+    if(running){
+        Swal.fire("The generator is already running, please wait until the generator completes.");
+        return false;
+    }
     let itemsNow = Number(document.getElementById("number").value);
     let hImages = Number(document.getElementById("numberH").value);
     let tagLetters = Number(document.getElementById("letters").value);
@@ -117,17 +141,11 @@ if (typeof(Worker) !== "undefined") {
         }
         //prog.value = 0;
         document.getElementById("container").classList.add("hidden");
+        document.getElementById("fastGenerate").classList.add("hidden");
         document.getElementById("loading").style.display = "flex";
         let lengthV = Math.ceil(length / 100);
         let uniqueTags = perqind(lengthV, unique);
-
-        Swal.fire({
-            position: 'top-end',
-            icon: 'info',
-            title: 'Generating tags...',
-            showConfirmButton: false,
-            timer: 1500
-        });
+        running = true;
 
         worker1 = new Worker("./worker.js")
         worker2 = new Worker("./worker.js")
@@ -749,10 +767,7 @@ if (typeof(Worker) !== "undefined") {
                 nameOfGenerated = numeral(length).format('0a');
                 nameOfHorizontal = numeral(h).format("0a");
                 nameOfVertical = numeral(v).format("0a");
-                console.log("OLD" + ReturnedText);
                 let text = shuffleLines(ReturnedText);
-                console.log("NEW" + text);
-
                 const blob = new Blob([text], {type: "text/plain"});
                 const fileUrl = URL.createObjectURL(blob);
                 const link = document.createElement("a");
@@ -760,6 +775,7 @@ if (typeof(Worker) !== "undefined") {
                 link.href = fileUrl;
                 link.click();
                 document.getElementById("container").classList.remove("hidden");
+                document.getElementById("fastGenerate").classList.remove("hidden");
                 document.getElementById("loading").style.display = "none";
                 console.timeEnd();
                 end = Date.now();
@@ -769,6 +785,7 @@ if (typeof(Worker) !== "undefined") {
                 numbersARRAY = arrayEMPTY;
                 horizontalARRAY = arrayEMPTY;
                 verticalARRAY = arrayEMPTY;
+                running = false;
             }   
         }
 
@@ -776,7 +793,9 @@ if (typeof(Worker) !== "undefined") {
     
   } else {
     // No Web Worker support..
-    alert("Your browser does not support the Web Worker. Please upgrade to Chrome or Firefox!")
+    alert("Your browser does not support the Web Worker. Please upgrade to Chrome or Firefox!");
+    running = false;
+
   }
 
 

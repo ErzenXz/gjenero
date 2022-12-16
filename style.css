@@ -87,7 +87,7 @@ button:focus {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .loading {
@@ -150,4 +150,46 @@ h1 {
 ::-webkit-scrollbar-thumb:hover {
     background: #818282;
     border-radius: 20px;
+}
+
+.fastGenerate {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.fastGenerate .item {
+    width: 110px;
+    height: 75px;
+    background-color: white;
+    padding: 10px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
+    border: 1.5px solid lightgrey;
+    transition: all 0.3s cubic-bezier(0.215, 0.610, 0.355, 1) 0ms;
+    user-select: none !important;
+}
+
+.fastGenerate .item:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+.fastGenerate .item:active {
+    border-color: #AAA;
+    transform: scale(0.95);
+}
+
+.tips {
+    border: 1.5px solid lightgrey;
+    background-color: white !important;
+    padding: 10px 20px;
+    margin-top: 25px;
+    font-size: 12px;
 }
