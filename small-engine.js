@@ -184,7 +184,7 @@ function generateTagsItem(h4, v4) {
 
    // Fill the usedTags set with random tags from generateTags function
 
-   for (let i = 0; i < totalTags + 200; i++) {
+   for (let i = 0; i < totalTags; i++) {
       let tag = generateTags(lettersN);
       if (usedTags.includes(tag)) {
          if (d > 99) d = 0;
@@ -204,36 +204,6 @@ function generateTagsItem(h4, v4) {
    let text = generateType2(h4, v4) + " " + totalTags + "" + tags;
    return text;
 }
-
-// function formatTEXT(text) {
-//    let words = text.split(" ");
-//    let replaced = new Set();
-//    let duplicatesFound = true;
-//    while (duplicatesFound) {
-//       const wordCounts = {};
-//       duplicatesFound = false;
-//       for (let i = 0; i < words.length; i++) {
-//          const word = words[i];
-//          if (!wordCounts[word]) {
-//             wordCounts[word] = 1;
-//          } else {
-//             wordCounts[word]++;
-//          }
-//       }
-
-//       for (let i = 0; i < words.length; i++) {
-//          let replacement = generateTags(lettersN);
-//          const word = words[i];
-//          if (!replaced.has(word) && wordCounts[word] > 1 && !wordCounts[replacement]) {
-//             words[i] = replacement;
-//             replaced.add(word);
-//             duplicatesFound = true;
-//             console.log(replacement);
-//          }
-//       }
-//    }
-//    return words.join(" ");
-// }
 
 function generateDocumnet(id, items, horizontal, vertical, dif, lettersItem, uniqueT) {
    hA = Number(horizontal);
