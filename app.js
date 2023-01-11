@@ -7,10 +7,14 @@ let numbersARRAY = [];
 let horizontalARRAY = [];
 let verticalARRAY = [];
 
+const smallLength = 1000;
+
+const statusP = document.getElementById("status");
+
 function split(x, n, array) {
    if (x < n)
       alert(
-         "An error occurred while splitting, please refresh the page and try again. If this error persists please contact us!"
+         "An error has occurred while splitting, please refresh the page and try again. If this error persists please contact us!"
       );
    else if (x % n == 0) {
       for (let i = 0; i < n; i++) array.push(x / n);
@@ -53,6 +57,7 @@ function generateDocumnet() {
       Swal.fire("The generator is already running, please wait until the generator completes.");
       return false;
    }
+   statusP.innerText = "Validating the generator data...";
    let itemsNow = Number(document.getElementById("number").value);
 
    let hImages = Number(document.getElementById("numberH").value);
@@ -101,8 +106,10 @@ function generateDocumnet() {
       return false;
    }
 
-   if (itemsNow < 200) {
+   if (itemsNow < smallLength) {
    } else {
+      statusP.innerText = "Splitting the job and collecting data...";
+
       split(itemsNow, 100, numbersARRAY);
       if (hImages == 0) {
          for (let i = 0; i < 100; i++) {
@@ -125,6 +132,7 @@ function generateDocumnet() {
    startThreads(itemsNow, minTags, maxTags, hImages, vImages, tagLetters, uniqueTags);
    console.time();
    start = Date.now();
+   statusP.innerText = "Validating finished successfully!";
 }
 
 let response;
@@ -152,6 +160,7 @@ if (typeof Worker !== "undefined") {
       let lengthV = Math.ceil(length / 100);
       let uniqueTags = perqind(lengthV, unique);
       running = true;
+      statusP.innerText = "Getting the worker ready...";
 
       let defaultWorker = new Worker("./small-engine.js");
 
@@ -359,7 +368,7 @@ if (typeof Worker !== "undefined") {
       worker99.onmessage = workerHasCompleted;
       worker100.onmessage = workerHasCompleted;
 
-      if (length < 200) {
+      if (length < smallLength) {
          defaultWorker.postMessage({
             id: 1,
             count: length,
@@ -370,7 +379,9 @@ if (typeof Worker !== "undefined") {
             lett: letters,
             unique: perqind(length, unique),
          });
+         statusP.innerText = "Starting S-Engine and transferring data...";
       } else {
+         statusP.innerText = "Starting workers...";
          worker1.postMessage({
             id: 1,
             count: numbersARRAY[0],
@@ -1379,9 +1390,11 @@ if (typeof Worker !== "undefined") {
          doneWorkers.push(e.data.id);
          workerSave(e.data.id);
          prog.value += lengthV;
+         statusP.innerText = "Completing data transfer from worker" + e.data.id + "...";
       }
 
       function defaultHasCompleted(e) {
+         statusP.innerText = "Getting data from all workers...";
          ReturnedText += e.data.result;
          nameOfGenerated = numeral(length).format("0a");
          nameOfHorizontal = numeral(h).format("0a");
@@ -1725,6 +1738,7 @@ if (typeof Worker !== "undefined") {
             link.download = `P${nameOfGenerated}_H${nameOfHorizontal}_V${nameOfVertical}`;
             link.href = fileUrl;
             link.click();
+            statusP.innerText = "Saving data...";
             document.getElementById("container").classList.remove("hidden");
             document.getElementById("fastGenerate").classList.remove("hidden");
             document.getElementById("loading").style.display = "none";
@@ -1747,6 +1761,7 @@ if (typeof Worker !== "undefined") {
 }
 
 function shuffleLines(input) {
+   statusP.innerText = "Formating data...";
    // Split the input into an array of lines
    const lines = input.split("\n");
 
