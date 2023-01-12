@@ -193,3 +193,30 @@ h1 {
     margin-top: 25px;
     font-size: 12px;
 }
+
+select {
+    width: 50%;
+    margin: 5px auto;
+    padding: 7px;
+    border-radius: 12px;
+    cursor: pointer;
+    outline: none;
+    border: 1.5px solid lightgrey;
+}
+
+#unique {
+    width: 50%;
+    cursor: col-resize;
+}
+
+.range {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+}
+
+output {
+    width: 50px;
+}

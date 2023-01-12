@@ -55,7 +55,17 @@
         <label for="letters">Tag letters</label>
         <input type="number" name="number" id="letters" min="1" max="100" placeholder="Tag letters" required>
         <label for="unique">Unique Tags</label>
-        <input type="number" name="number" id="unique" min="1" max="100" placeholder="Unique tags (in %)" required>
+
+        <div class="range">
+            <input type="range" id="unique" min="25" max="100" value="35" required
+                oninput="this.nextElementSibling.value = this.value + '%'">
+            <output></output>
+        </div>
+
+        <select name="engine" id="engine">
+            <option value="1">Rapid Engine</option>
+            <option value="2" selected>E2 Engine</option>
+        </select>
         <button type="submit" onclick="generateDocumnet()">Generate</button>
 
     </main>
@@ -65,8 +75,10 @@
         <ol>
             <h3>Tips and tricks!</h3>
             <li>You can generate 0 horizontal photos by putting 1.01 in the horizontal input.</li>
-            <li>You can generate up to 25,000,000 photos with our generator.</li>
+            <li>You can generate up to 25,000,000 photos.</li>
             <li>The minimum allowed photos is 5.</li>
+            <li>Rapid Engine is light and fast single-threaded version</li>
+            <li>E2 Engine is multithreaded and heavy-load optimized version</li>
         </ol>
     </div>
     <div class="loading" id="loading" style="display: none; ">
@@ -77,7 +89,7 @@
         <!-- <iframe src="https://s.apps.erzen.tk/memory/" frameborder="0" width="100%" height="100%"></iframe> -->
     </div>
     <br>
-    <p>Version 1.4 Beta 2</p>
+    <p>Version 1.5</p>
     <pre>ErzenK           All rights reserved         2022 - 2023©</pre>
 </body>
 

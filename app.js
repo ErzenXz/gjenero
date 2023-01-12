@@ -60,9 +60,13 @@ function generateDocumnet() {
    statusP.innerText = "Validating the generator data...";
    let itemsNow = Number(document.getElementById("number").value);
 
+   var e = document.getElementById("engine");
+   var engine = e.value;
+
    let hImages = Number(document.getElementById("numberH").value);
    let tagLetters = Number(document.getElementById("letters").value);
-   let uniqueTags = Number(document.getElementById("unique").value);
+   let uniqueTags = Number(document.getElementById("unique").valueAsNumber);
+   console.log(tagLetters, uniqueTags);
    let vImages;
    if (hImages > itemsNow) hImages = itemsNow;
    document.getElementById("numberH").value = hImages;
@@ -77,9 +81,9 @@ function generateDocumnet() {
       document.getElementById("numberH").value = hImages;
       document.getElementById("numberV").value = vImages;
    }
-   if (uniqueTags == "" || uniqueTags > 100 || uniqueTags < 0) {
+   if (uniqueTags == "" || uniqueTags > 100 || uniqueTags < 25) {
       uniqueTags = 50;
-      document.getElementById("unique").value = uniqueTags;
+      document.getElementById("unique").valueAsNumber = uniqueTags;
    }
    if (tagLetters == "" || tagLetters > 100 || tagLetters < 0) {
       tagLetters = 4;
@@ -106,7 +110,7 @@ function generateDocumnet() {
       return false;
    }
 
-   if (itemsNow < smallLength) {
+   if (itemsNow < smallLength || engine == 1) {
    } else {
       statusP.innerText = "Splitting the job and collecting data...";
 
@@ -129,7 +133,7 @@ function generateDocumnet() {
    }
 
    console.log(hImages + "   " + vImages);
-   startThreads(itemsNow, minTags, maxTags, hImages, vImages, tagLetters, uniqueTags);
+   startThreads(itemsNow, minTags, maxTags, hImages, vImages, tagLetters, uniqueTags, engine);
    console.time();
    start = Date.now();
    statusP.innerText = "Validating finished successfully!";
@@ -146,7 +150,7 @@ function perqind(num, amount) {
 if (typeof Worker !== "undefined") {
    // Web worker support!
 
-   function startThreads(length, min, max, h, v, letters, unique) {
+   function startThreads(length, min, max, h, v, letters, unique, engine) {
       let ReturnedText = length;
       let prog = document.getElementById("progress");
       prog.max = length;
@@ -368,7 +372,8 @@ if (typeof Worker !== "undefined") {
       worker99.onmessage = workerHasCompleted;
       worker100.onmessage = workerHasCompleted;
 
-      if (length < smallLength) {
+      if (length < smallLength || engine == 1) {
+         statusP.innerText = "Starting S-Engine and transferring data...";
          defaultWorker.postMessage({
             id: 1,
             count: length,
@@ -379,7 +384,6 @@ if (typeof Worker !== "undefined") {
             lett: letters,
             unique: perqind(length, unique),
          });
-         statusP.innerText = "Starting S-Engine and transferring data...";
       } else {
          statusP.innerText = "Starting workers...";
          worker1.postMessage({
