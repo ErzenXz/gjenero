@@ -133,6 +133,7 @@ function generateDocumnet() {
    }
 
    console.log(hImages + "   " + vImages);
+
    startThreads(itemsNow, minTags, maxTags, hImages, vImages, tagLetters, uniqueTags, engine);
    console.time();
    start = Date.now();
@@ -371,6 +372,7 @@ if (typeof Worker !== "undefined") {
       worker98.onmessage = workerHasCompleted;
       worker99.onmessage = workerHasCompleted;
       worker100.onmessage = workerHasCompleted;
+      statusP.innerText = "Starting F-Engine...";
 
       if (length < smallLength || engine == 1) {
          statusP.innerText = "Starting S-Engine and transferring data...";

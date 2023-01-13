@@ -369,7 +369,7 @@ function generateTags(length) {
 }
 
 function shuffle(array) {
-   for (let i = array.length - 1; i > 0; --i) {
+   for (let i = Math.max(0, array.length - 1); i > 0; --i) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
    }
@@ -437,8 +437,12 @@ function generateDocumnet(id, items, horizontal, vertical, dif, lettersItem, uni
    lettersN += lettersItem;
    unique += uniqueT / 100;
    c += 0;
-   for (let i = 0; i < totalItems; i++) {
-      textBack += "\n" + generateTagsItem(hA, vA);
+   try {
+      for (let aa = 0; aa < totalItems; aa++) {
+         textBack += "\n" + generateTagsItem(hA, vA);
+      }
+   } catch (error) {
+      console.log("An error occurred while generating tags: " + error.message);
    }
 }
 
