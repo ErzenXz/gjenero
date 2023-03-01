@@ -12,7 +12,7 @@
 <body>
     <div class="container">
         <h1>Image Classification</h1>
-        <div class="mini">
+        <div class="mini hidden" id="mini">
 
             <input class="custom-file-input" id="fileInput" type="file" multiple><br>
             <div class="running hidden" id="running">
@@ -21,10 +21,15 @@
             </div>
 
         </div>
+
+        <div class="results hidden" id="results">
+            <textarea name="output" id="output" rows="25" cols="25" readonly></textarea>
+            <button onclick="saveFile()">Save</button>
+        </div>
     </div>
 
     <br>
-    <p>Beta 1</p>
+    <p>Beta 2</p>
     <pre>ErzenK           All rights reserved         2023©</pre>
 </body>
 
