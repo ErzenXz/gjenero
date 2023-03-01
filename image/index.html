@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Image Classification Example</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tensorflow/4.2.0/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0/dist/mobilenet.min.js"></script>
+    <script defer src="script.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Image Classification</h1>
+        <div class="mini">
+
+            <input class="custom-file-input" id="fileInput" type="file" multiple><br>
+            <div class="running hidden" id="running">
+                <p>Engine is currently running...</p>
+                <progress id="progress" min="0" max="100"></progress>
+            </div>
+
+        </div>
+    </div>
+
+    <br>
+    <p>Beta 1</p>
+    <pre>ErzenK           All rights reserved         2023©</pre>
+</body>
+
+</html>
