@@ -1786,3 +1786,11 @@ function shuffleLines(input) {
    // Join the lines back into a single string and return it
    return lines.join("\n");
 }
+
+function loadWEB(url) {
+   if (url == "image") {
+      window.location.href = window.location.href + "image/";
+   } else {
+      location.reload();
+   }
+}

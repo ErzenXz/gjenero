@@ -17,6 +17,7 @@ if (prog.value != undefined || prog.value != null) {
 async function loadModel() {
    model = await mobilenet.load();
    document.getElementById("mini").classList.remove("hidden");
+   document.getElementById("loading").classList.add("hidden");
    console.log("Model loaded");
 }
 
@@ -75,34 +76,42 @@ function downloadTxtFile(tags) {
 }
 
 async function handleFileUpload(event) {
-   const files = event.target.files;
-   max = files.length;
-   prog.value = 0;
-   prog.max = max;
+   try {
+      const files = event.target.files;
+      max = files.length;
+      if (max < 2) {
+         alert("The minimum number of files required to upload is 1");
+         return false;
+      }
+      prog.value = 0;
+      prog.max = max;
 
-   const images = [];
+      const images = [];
 
-   document.getElementById("fileInput").classList.add("hidden");
-   document.getElementById("running").classList.remove("hidden");
-   document.getElementById("results").classList.add("hidden");
+      document.getElementById("fileInput").classList.add("hidden");
+      document.getElementById("running").classList.remove("hidden");
+      document.getElementById("results").classList.add("hidden");
 
-   for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      const img = document.createElement("img");
-      const reader = new FileReader();
+      for (let i = 0; i < files.length; i++) {
+         const file = files[i];
+         const img = document.createElement("img");
+         const reader = new FileReader();
 
-      reader.onload = function (e) {
-         img.src = e.target.result;
-         images.push(img);
+         reader.onload = function (e) {
+            img.src = e.target.result;
+            images.push(img);
 
-         if (images.length === files.length) {
-            classifyImages(images).then((tags) => {
-               downloadTxtFile(tags);
-            });
-         }
-      };
+            if (images.length === files.length) {
+               classifyImages(images).then((tags) => {
+                  downloadTxtFile(tags);
+               });
+            }
+         };
 
-      reader.readAsDataURL(file);
+         reader.readAsDataURL(file);
+      }
+   } catch (error) {
+      alert("An error occurred : " + error.message);
    }
 }
 
