@@ -1,4 +1,4 @@
-"use strict";
+/////////////////////// OLD
 
 // const modelUrl =
 //    "https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v2_100_224/classification/4"; // Efficient model
@@ -7,11 +7,29 @@
 const modelUrl = "https://tfhub.dev/google/imagenet/mobilenet_v3_large_100_224/classification/5"; // Efficient model 2
 
 // const modelUrl = "https://tfhub.dev/google/imagenet/efficientnet_v2_imagenet1k_b3/classification/2"; // Intense model
-
 let model;
 
 let min = 0;
 let max = 0;
+
+function saveFile() {
+   const element = document.createElement("a");
+   const file = new Blob([document.getElementById("output").value], { type: "text/plain" });
+   let date = new Date();
+   let dateTime =
+      date.getTime() +
+      date.getUTCSeconds() +
+      "/ " +
+      date.getHours() +
+      date.getMinutes() +
+      ":" +
+      date.getSeconds();
+
+   element.href = URL.createObjectURL(file);
+   element.download = `tags-${dateTime}.txt`;
+   document.body.appendChild(element);
+   element.click();
+}
 
 let prog = document.getElementById("progress");
 if (prog.value != undefined || prog.value != null) {
@@ -28,7 +46,7 @@ async function loadModel() {
 
 async function classifyImages(images) {
    const tags = [];
-   document.getElementById("status").innerText = "Engine is currently running...";
+   document.getElementById("status").innerText = "Engine is running...";
 
    for (let i = 0; i < images.length; i++) {
       let img = images[i];
@@ -78,7 +96,7 @@ function downloadTxtFile(tags) {
    element.href = URL.createObjectURL(file);
    element.download = `tags-${dateTime}.txt`;
    document.body.appendChild(element);
-   element.click();
+   //element.click();
    document.getElementById("fileInput").classList.remove("hidden");
    document.getElementById("running").classList.add("hidden");
    document.getElementById("results").classList.remove("hidden");
@@ -101,14 +119,16 @@ async function handleFileUpload(event) {
       document.getElementById("fileInput").classList.add("hidden");
       document.getElementById("running").classList.remove("hidden");
       document.getElementById("results").classList.add("hidden");
-      let index = 0;
 
       for (let i = 0; i < files.length; i++) {
          const file = files[i];
          let fileName = file.name;
          const img = document.createElement("img");
          const reader = new FileReader();
-         document.getElementById("status").innerText = `Preparing to resize images...`;
+         document.getElementById(
+            "status"
+         ).innerText = `Resizing image (${fileName})...  ${i}/${files.length}`;
+
          reader.onload = function (e) {
             img.onload = function () {
                const canvas = document.createElement("canvas");
@@ -126,10 +146,6 @@ async function handleFileUpload(event) {
                   }
                };
                resizedImg.src = canvas.toDataURL();
-               index++;
-               document.getElementById(
-                  "status"
-               ).innerText = `Engine is currently resizing images... (${index}/${files.length})`;
             };
             img.src = e.target.result;
          };
@@ -141,25 +157,10 @@ async function handleFileUpload(event) {
    }
 }
 
-function saveFile() {
-   const element = document.createElement("a");
-   const file = new Blob([document.getElementById("output").value], { type: "text/plain" });
-   let date = new Date();
-   let dateTime =
-      date.getTime() +
-      date.getUTCSeconds() +
-      "/ " +
-      date.getHours() +
-      date.getMinutes() +
-      ":" +
-      date.getSeconds();
-
-   element.href = URL.createObjectURL(file);
-   element.download = `tags-${dateTime}.txt`;
-   document.body.appendChild(element);
-   element.click();
-}
-
 document.getElementById("fileInput").addEventListener("change", handleFileUpload);
 
 loadModel();
+
+document.getElementById("saveButton").addEventListener("click", function () {
+   saveFile();
+});

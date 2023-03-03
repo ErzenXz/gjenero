@@ -3,9 +3,9 @@
 
 <head>
     <title>Image Classification</title>
+    <script defer src="script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tensorflow/4.2.0/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0/dist/mobilenet.min.js"></script>
-    <script defer src="script.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -17,7 +17,7 @@
 
             <input class="custom-file-input" id="fileInput" type="file" multiple><br>
             <div class="running hidden" id="running">
-                <p>Engine is currently running...</p>
+                <p id="status">Engine is currently running...</p>
                 <progress id="progress" min="0" max="100"></progress>
             </div>
 
@@ -25,12 +25,12 @@
 
         <div class="results hidden" id="results">
             <textarea name="output" id="output" rows="25" cols="25" readonly></textarea>
-            <button onclick="saveFile()">Save</button>
+            <button onclick="saveFile()" id="saveButton">Save</button>
         </div>
     </div>
 
     <br>
-    <p>Version 1.0</p>
+    <p>Version 1.1</p>
     <pre>ErzenK           All rights reserved         2023©</pre>
 </body>
 
