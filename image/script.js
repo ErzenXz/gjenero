@@ -5,6 +5,9 @@
 
 // const modelUrl = "https://tfhub.dev/google/imagenet/inception_v3/classification/5"; // Hard model
 const modelUrl = "https://tfhub.dev/google/imagenet/mobilenet_v3_large_100_224/classification/5"; // Efficient model 2
+// const modelUrl = "https://tfhub.dev/google/imagenet/resnet_v1_152/classification/5"; // imagenet/resnet_v1_152/classification
+// const modelUrl =
+// "https://tfhub.dev/google/imagenet/efficientnet_v2_imagenet21k_ft1k_b0/classification/2"; // imagenet/efficientnet_v2_imagenet21k_ft1k_b0/classification
 
 // const modelUrl = "https://tfhub.dev/google/imagenet/efficientnet_v2_imagenet1k_b3/classification/2"; // Intense model
 
@@ -42,7 +45,13 @@ async function classifyImages(images) {
 
       const uniqueTags = [...new Set(imageTags)];
 
-      tags.push({ tags: uniqueTags, orientation: img.height > img.width ? "V" : "H" });
+      tags.push({
+         tags: uniqueTags,
+         orientation:
+            Number(img.getAttribute("oldHeight")) > Number(img.getAttribute("oldWidth"))
+               ? "V"
+               : "H",
+      });
       images[i] = null;
       img[i] = null;
       tf.dispose(predictions); // dispose of the predictions tensor
@@ -78,7 +87,7 @@ function downloadTxtFile(tags) {
    element.href = URL.createObjectURL(file);
    element.download = `tags-${dateTime}.txt`;
    document.body.appendChild(element);
-   element.click();
+   //element.click();
    document.getElementById("fileInput").classList.remove("hidden");
    document.getElementById("running").classList.add("hidden");
    document.getElementById("results").classList.remove("hidden");
@@ -94,7 +103,7 @@ async function handleFileUpload(event) {
          return false;
       }
       prog.value = 0;
-      prog.max = max;
+      prog.max = max + max;
 
       const images = [];
 
@@ -117,6 +126,8 @@ async function handleFileUpload(event) {
                const ctx = canvas.getContext("2d");
                ctx.drawImage(img, 0, 0, 224, 224);
                const resizedImg = new Image();
+               resizedImg.setAttribute("oldWidth", `${img.width}`);
+               resizedImg.setAttribute("oldHeight", `${img.height}`);
                resizedImg.onload = function () {
                   images.push(resizedImg);
                   if (images.length === files.length) {
@@ -127,6 +138,7 @@ async function handleFileUpload(event) {
                };
                resizedImg.src = canvas.toDataURL();
                index++;
+               prog.value += 1;
                document.getElementById(
                   "status"
                ).innerText = `Engine is currently resizing images... (${index}/${files.length})`;
