@@ -91,13 +91,271 @@ function downloadTxtFile(tags) {
    document.getElementById("fileInput").classList.remove("hidden");
    document.getElementById("running").classList.add("hidden");
    document.getElementById("results").classList.remove("hidden");
+
+   // Start the charts
+
+   // Get the names and sizes of the files as separate arrays
+   const names = filesArray.map((file) => file.name);
+   const sizes = filesArray.map((file) => file.size);
+
+   // Create a bar chart to show the sizes of the files
+   const ctx = document.getElementById("fileSize").getContext("2d");
+   const fileSizeChart = new Chart(ctx, {
+      type: "bar",
+      data: {
+         labels: names,
+         datasets: [
+            {
+               label: "Image Size",
+               data: sizes,
+               backgroundColor: ["#3e95cd", "#8e5ea2", "#3cba9f", "#e8c3b9"],
+               borderWidth: 1,
+            },
+         ],
+      },
+      options: {
+         scales: {
+            y: {
+               ticks: {
+                  callback: function (value, index, values) {
+                     return formatBytes(value);
+                  },
+               },
+            },
+         },
+      },
+   });
+
+   // Create a pie chart to show the percentage of file types
+   const types = filesArray.map((file) => file.name.split(".").pop());
+   const typeCounts = {};
+   types.forEach((type) => {
+      typeCounts[type] = (typeCounts[type] || 0) + 1;
+   });
+   const typeLabels = Object.keys(typeCounts);
+   const typeData = typeLabels.map((label) => typeCounts[label]);
+
+   const ctx2 = document.getElementById("fileType").getContext("2d");
+   const fileTypeChart = new Chart(ctx2, {
+      type: "pie",
+      data: {
+         labels: typeLabels,
+         datasets: [
+            {
+               data: typeData,
+               backgroundColor: [
+                  "#FF6384",
+                  "#36A2EB",
+                  "#FFCE56",
+                  "#FF8A80",
+                  "#C5CAE9",
+                  "#E0E0E0",
+                  "#BDBDBD",
+               ],
+               borderWidth: 1,
+            },
+         ],
+      },
+      options: {
+         legend: {
+            position: "bottom",
+         },
+      },
+   });
+
+   // Other charts from the generatet output
+
+   // const photos = content.split("\n").slice(1);
+   // let horizontalCount = 0;
+   // let verticalCount = 0;
+
+   // photos.forEach((photo) => {
+   //    const orientation = photo.charAt(0);
+   //    if (orientation === "H") {
+   //       horizontalCount++;
+   //    } else if (orientation === "V") {
+   //       verticalCount++;
+   //    }
+   // });
+
+   // const ctx3 = document.getElementById("photo-types-chart").getContext("2d");
+   // const chart = new Chart(ctx3, {
+   //    type: "bar",
+   //    data: {
+   //       labels: ["Horizontal", "Vertical"],
+   //       datasets: [
+   //          {
+   //             label: "Photo Types",
+   //             data: [horizontalCount, verticalCount],
+   //             backgroundColor: ["rgba(255, 99, 132, 0.2)", "rgba(54, 162, 235, 0.2)"],
+   //             borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
+   //             borderWidth: 1,
+   //          },
+   //       ],
+   //    },
+   //    options: {
+   //       scales: {
+   //          y: {
+   //             ticks: {},
+   //          },
+   //       },
+   //    },
+   // });
+
+   // // Number of tags chart
+
+   // const photos2 = content.split("\n").slice(1);
+   // const data = photos2.map((photo, index) => ({
+   //    x: photo.split(" ").length - 2,
+   //    y: index,
+   // }));
+
+   // const ctx4 = document.getElementById("tags-scatterplot").getContext("2d");
+   // const chart3 = new Chart(ctx4, {
+   //    type: "scatter",
+   //    data: {
+   //       datasets: [
+   //          {
+   //             label: "Tags per photo",
+   //             data: data,
+   //             backgroundColor: "rgba(255, 99, 132, 0.2)",
+   //             borderColor: "rgba(255, 99, 132, 1)",
+   //             borderWidth: 1,
+   //          },
+   //       ],
+   //    },
+   //    options: {
+   //       scales: {
+   //          x: [
+   //             {
+   //                ticks: {
+   //                   beginAtZero: true,
+   //                },
+   //                scaleLabel: {
+   //                   display: true,
+   //                   labelString: "Number of tags",
+   //                },
+   //             },
+   //          ],
+   //          y: [
+   //             {
+   //                ticks: {
+   //                   beginAtZero: true,
+   //                },
+   //                scaleLabel: {
+   //                   display: true,
+   //                   labelString: "Photo index",
+   //                },
+   //             },
+   //          ],
+   //       },
+   //    },
+   // });
+
+   // // // //////////////////////////////////
+
+   // const photos4 = content.split("\n").slice(1);
+   // const tagSet = new Set();
+   // const tagCounts = {};
+
+   // photos4.forEach((photo) => {
+   //    const tags1 = photo.split(" ").slice(2);
+   //    tags1.forEach((tag) => {
+   //       tagSet.add(tag);
+   //       if (tag in tagCounts) {
+   //          tagCounts[tag]++;
+   //       } else {
+   //          tagCounts[tag] = 1;
+   //       }
+   //    });
+   // });
+
+   // const tags1 = Array.from(tagSet).sort();
+   // const data3 = tags1.map((tag1) => {
+   //    return tags1.map((tag2) => {
+   //       let count = 0;
+   //       photos4.forEach((photo) => {
+   //          const tags1 = photo.split(" ").slice(2);
+   //          if (tags1.includes(tag1) && tags1.includes(tag2)) {
+   //             count++;
+   //          }
+   //       });
+   //       return count;
+   //    });
+   // });
+
+   // // Bubble
+
+   // const ctx5 = document.getElementById("tags-heatmap").getContext("2d");
+   // const chart4 = new Chart(ctx5, {
+   //    type: "bubble",
+   //    data: {
+   //       datasets: [
+   //          {
+   //             label: "Tag Co-Occurrence",
+   //             data: data3.map((d) => {
+   //                return {
+   //                   x: d.x,
+   //                   y: d.y,
+   //                   r: d.value,
+   //                };
+   //             }),
+   //             borderWidth: 1,
+   //             borderColor: "white",
+   //             backgroundColor: "rgba(255, 99, 132, 0.2)",
+   //             hoverBackgroundColor: "rgba(255, 99, 132, 0.8)",
+   //             raduis: 10,
+   //          },
+   //       ],
+   //    },
+   //    options: {
+   //       scales: {
+   //          x: [
+   //             {
+   //                ticks: {
+   //                   beginAtZero: true,
+   //                },
+   //                scaleLabel: {
+   //                   display: true,
+   //                   labelString: "Tag",
+   //                },
+   //             },
+   //          ],
+   //          y: [
+   //             {
+   //                ticks: {
+   //                   beginAtZero: true,
+   //                },
+   //                scaleLabel: {
+   //                   display: true,
+   //                   labelString: "Tag",
+   //                },
+   //             },
+   //          ],
+   //       },
+   //       tooltips: {
+   //          callbacks: {
+   //             title: function (tooltipItems, data3) {
+   //                return `${tooltipItems[0].xLabel} & ${tooltipItems[0].yLabel}`;
+   //             },
+   //             label: function (tooltipItem, data3) {
+   //                return `Co-occurrence count: ${tooltipItem.value}`;
+   //             },
+   //          },
+   //       },
+   //    },
+   // });
 }
+
+let filesArray = [];
+let sizeArray = [];
 
 async function handleFileUpload(event) {
    console.time();
    try {
       const files = event.target.files;
       max = files.length;
+      document.getElementById("time").innerText = calculateTime(max);
       if (max < 2) {
          alert("The minimum number of files required to upload is 1");
          return false;
@@ -106,6 +364,7 @@ async function handleFileUpload(event) {
       prog.max = max + max;
 
       const images = [];
+      let totalSize = 0;
 
       document.getElementById("fileInput").classList.add("hidden");
       document.getElementById("running").classList.remove("hidden");
@@ -115,9 +374,16 @@ async function handleFileUpload(event) {
       for (let i = 0; i < files.length; i++) {
          const file = files[i];
          let fileName = file.name;
+         filesArray.push({
+            name: fileName,
+            size: file.size,
+         });
+
+         sizeArray.push(file.size);
          const img = document.createElement("img");
          const reader = new FileReader();
          document.getElementById("status").innerText = `Preparing to resize images...`;
+
          reader.onload = function (e) {
             img.onload = function () {
                const canvas = document.createElement("canvas");
@@ -136,6 +402,8 @@ async function handleFileUpload(event) {
                      });
                   }
                };
+               // Update the time until completion
+               document.getElementById("timeLeft").innerText = calculateTime(max - i, 1);
                resizedImg.src = canvas.toDataURL();
                index++;
                prog.value += 1;
@@ -145,9 +413,16 @@ async function handleFileUpload(event) {
             };
             img.src = e.target.result;
          };
-
          reader.readAsDataURL(file);
       }
+
+      for (let i = 0; i < sizeArray.length; i++) {
+         totalSize += sizeArray[i];
+      }
+
+      totalSize = formatBytes(totalSize);
+
+      document.getElementById("fileSizeA").innerHTML = "Total image size: " + totalSize;
    } catch (error) {
       alert("An error occurred : " + error.message);
    }
@@ -175,3 +450,71 @@ function saveFile() {
 document.getElementById("fileInput").addEventListener("change", handleFileUpload);
 
 loadModel();
+
+// Set up presets with number of images and time in milliseconds
+const presets = [
+   { numImages: 2, time: 783 },
+   { numImages: 3, time: 1258 },
+   { numImages: 4, time: 1654 },
+   { numImages: 5, time: 2504 },
+   { numImages: 12, time: 4566 },
+   { numImages: 15, time: 5733 },
+   { numImages: 17, time: 7898 },
+   { numImages: 20, time: 8949 },
+   { numImages: 30, time: 11801 },
+   { numImages: 45, time: 18870 },
+   { numImages: 60, time: 28408 },
+   { numImages: 65, time: 30726 },
+   { numImages: 80, time: 50525 },
+   { numImages: 106, time: 52566 },
+   { numImages: 132, time: 71483 },
+];
+
+function calculateTime(numImages, type) {
+   // Find the preset with the minimum number of images greater than or equal to numImages
+   const preset = presets.find((p) => p.numImages >= numImages);
+
+   if (!preset) {
+      // If there is no preset for the given number of images, return null
+      return null;
+   }
+
+   // Calculate the time per image by dividing the preset time by the number of images
+   const timePerImage = preset.time / preset.numImages;
+
+   // Calculate the estimated time to edit numImages by multiplying the time per image by numImages
+   const estimatedTime = timePerImage * numImages;
+
+   // Return the estimated time rounded to the nearest millisecond
+   //console.log("Estimated time to classify images is " + estimatedTime / 1000 + " seconds");
+   let text;
+   if (type == 1) {
+      text = Math.round(estimatedTime / 1000) + " seconds left";
+   } else {
+      text = "ETA: " + Math.round(estimatedTime / 1000) + " seconds";
+   }
+   return text;
+}
+
+function timeConvert(ms) {
+   let seconds = (ms / 1000).toFixed(1);
+   let minutes = (ms / (1000 * 60)).toFixed(1);
+   let hours = (ms / (1000 * 60 * 60)).toFixed(1);
+   let days = (ms / (1000 * 60 * 60 * 24)).toFixed(1);
+   if (seconds < 60) return seconds + " seconds";
+   else if (minutes < 60) return minutes + " minutes";
+   else if (hours < 24) return hours + " hours";
+   else return days + " days";
+}
+
+function formatBytes(bytes, decimals = 2) {
+   if (!+bytes) return "0 bytes";
+
+   const k = 1024;
+   const dm = decimals < 0 ? 0 : decimals;
+   const sizes = ["bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+   const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+}

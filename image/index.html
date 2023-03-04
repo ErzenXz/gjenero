@@ -7,6 +7,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tensorflow/4.2.0/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0/dist/mobilenet.min.js"></script>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+
 </head>
 
 <body>
@@ -15,9 +17,15 @@
         <p id="loading">Loading model....</p>
         <div class="mini hidden" id="mini">
 
-            <input class="custom-file-input" id="fileInput" type="file" multiple><br>
+            <input class="custom-file-input" id="fileInput" type="file"
+                accept="image/png, image/gif, image/jpeg, image/jpg" multiple><br>
             <div class="running hidden" id="running">
                 <p id="status">Engine is currently running...</p>
+                <div class="time">
+                    <div id="time"></div>
+                    <div id="timeLeft"></div>
+                </div>
+                <p id="fileSizeA"></p>
                 <progress id="progress" min="0" max="100"></progress>
             </div>
 
@@ -26,11 +34,22 @@
         <div class="results hidden" id="results">
             <textarea name="output" id="output" rows="25" cols="25" readonly></textarea>
             <button onclick="saveFile()" id="saveButton">Save</button>
+            <br><br>
+
+            <canvas id="tags-heatmap"></canvas>
+            <br>
+            <canvas id="tags-scatterplot"></canvas>
+            <br>
+            <canvas id="photo-types-chart"></canvas>
+            <br>
+            <canvas id="fileSize"></canvas>
+            <br>
+            <canvas id="fileType"></canvas>
         </div>
     </div>
 
     <br>
-    <p>Version 1.1.5</p>
+    <p>Version 1.2</p>
     <pre>ErzenK           All rights reserved         2023©</pre>
 </body>
 
