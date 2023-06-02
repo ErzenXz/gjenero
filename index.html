@@ -7,12 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gjenero</title>
     <script defer src="app.js"></script>
-    <script defer src="https://global.cdn.erzen.tk/js/alert.js"></script>
+    <!-- <script defer src="https://global.cdn.erzen.tk/js/alert.js"></script> -->
     <script defer src="//cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+
 </head>
 
 <body>
@@ -75,8 +77,8 @@
         </div>
 
         <select name="engine" id="engine">
-            <option value="1">Rapid Engine</option>
-            <option value="2" selected>E2 Engine</option>
+            <option value="1" selected>Rapid Engine (Recommended)</option>
+            <option value="2">E2 Engine</option>
         </select>
         <button type="submit" onclick="generateDocumnet()">Generate</button>
 
@@ -85,13 +87,39 @@
     <div class="tips">
 
         <ol>
-            <h3>Tips and tricks!</h3>
-            <li>You can generate 0 horizontal photos by putting 1.01 in the horizontal input.</li>
-            <li>You can generate up to 25,000,000 photos.</li>
-            <li>The minimum allowed photos is 5.</li>
-            <li>Rapid Engine is light and fast single-threaded version</li>
-            <li>E2 Engine is multithreaded and heavy-load optimized version</li>
+            <li>
+                <h3>Valuable Tips and Tricks:</h3>
+                <p>Generate Zero Horizontal Photos:</p>
+                <p>By inputting the value "0" in the horizontal input field, you can conveniently generate a layout
+                    without any horizontal photos.</p>
+            </li>
+            <li>
+                <h3>Massive Photo Generation Capability:</h3>
+                <p>Create Up to 25,000,000 Photos:</p>
+                <p>Our system supports the generation of an extensive range of photos, allowing you to create up to
+                    25,000,000 images with ease.</p>
+            </li>
+            <li>
+                <h3>Minimum Photo Requirement:</h3>
+                <p>Ensure a Minimum of 5 Photos:</p>
+                <p>To maintain the desired layout integrity, a minimum of 5 photos is required. Please ensure that you
+                    provide at least 5 images for optimal results.</p>
+            </li>
+            <li>
+                <h3>Rapid Engine for Enhanced Performance:</h3>
+                <p>Experience Lightning-Fast Single-Threaded Processing:</p>
+                <p>Our Rapid Engine is specifically designed to provide efficient and swift processing capabilities for
+                    your photo generation needs. Enjoy quick results and smooth performance.</p>
+            </li>
+            <li>
+                <h3>E2 Engine for High-Performance Workloads:</h3>
+                <p>Optimized for Multithreading and Heavy-Load:</p>
+                <p>If you require enhanced performance for high-volume workloads, our E2 Engine is the ideal choice.
+                    Designed for multithreading and optimized to handle heavy loads, it ensures reliable processing even
+                    in demanding scenarios.</p>
+            </li>
         </ol>
+
     </div>
     <div class="loading" id="loading" style="display: none; ">
         <h2>Generating...</h2>
@@ -101,8 +129,9 @@
         <!-- <iframe src="https://s.apps.erzen.tk/memory/" frameborder="0" width="100%" height="100%"></iframe> -->
     </div>
     <br>
-    <p>Version 1.5.1</p>
+    <p>Version 1.5.2</p>
     <pre>ErzenK           All rights reserved         2022 - 2023©</pre>
+    <p style="font-size: 10px;">Last updated: 02/06/2023 d.m.y at 03:07 AM</p>
 </body>
 
 </html>

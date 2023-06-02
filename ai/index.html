@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script defer src="./ai.js"></script>
+    <script src="//unpkg.com/brain.js"></script>
+
+</head>
+
+<body>
+    <form id="in">
+        <label for="input">Input:</label>
+        <input type="text" id="input">
+        <br>
+        <label for="output">Output:</label>
+        <input type="text" id="output">
+        <br>
+        <button type="button" id="train-btn">Add Data</button>
+    </form>
+
+    <button onclick="startAI()">AI</button>
+
+
+    <br><br><br>
+
+    <form id="out">
+        <label for="message">Message:</label>
+        <input type="text" id="message">
+        <br>
+        <button type="button" id="predict-btn">Predict Output</button>
+    </form>
+
+</body>
+
+</html>

@@ -31,6 +31,63 @@ function split(x, n, array) {
    }
 }
 
+function toast(message, duration = 4500, delay = 0) {
+
+   // Check for existing toast class elements
+
+   const existingToast = document.querySelector('.toast');
+
+   if (existingToast) {
+      existingToast.remove();
+   }
+
+
+   const toastContainer = document.createElement('div');
+   toastContainer.style.position = 'fixed';
+   toastContainer.style.top = '1rem';
+   toastContainer.style.right = '1rem';
+   toastContainer.style.display = 'flex';
+   toastContainer.style.alignItems = 'center';
+   toastContainer.style.justifyContent = 'center';
+   toastContainer.style.width = '16rem';
+   toastContainer.style.padding = '1rem';
+   toastContainer.style.backgroundColor = '#1F2937';
+   toastContainer.style.color = '#FFF';
+   toastContainer.style.borderRadius = '0.25rem';
+   toastContainer.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.25)';
+   toastContainer.style.overflow = 'auto';
+   toastContainer.style.maxHeight = '500px';
+   toastContainer.style.minWidth = '200px';
+   toastContainer.style.width = 'fit-content';
+   toastContainer.style.zIndex = '9999';
+   toastContainer.setAttribute('class', 'toast');
+
+   const toastText = document.createElement('span');
+   toastText.style.whiteSpace = 'nowrap';
+   toastText.style.overflow = 'hidden';
+   toastText.style.textOverflow = 'ellipsis';
+   toastText.textContent = message;
+   toastContainer.appendChild(toastText);
+
+   document.body.appendChild(toastContainer);
+
+   setTimeout(() => {
+      toastContainer.style.opacity = '0';
+      setTimeout(() => {
+         toastContainer.remove();
+      }, 300);
+   }, duration + delay);
+
+   toast.dismiss = function () {
+      toastContainer.style.opacity = '0';
+      setTimeout(() => {
+         toastContainer.remove();
+      }, 300);
+   };
+}
+
+
+
 function fastGEN(items) {
    let array = [];
    split(items, 2, array);
@@ -54,10 +111,11 @@ let running = false;
 
 function generateDocumnet() {
    if (running) {
-      Swal.fire("The generator is already running, please wait until the generator completes.");
+      toast("The generator is already running, please wait until the generator completes.");
       return false;
    }
    statusP.innerText = "Validating the generator data...";
+   toast("Validating the generator data...");
    let itemsNow = Number(document.getElementById("number").value);
 
    var e = document.getElementById("engine");
@@ -66,21 +124,24 @@ function generateDocumnet() {
    let hImages = Number(document.getElementById("numberH").value);
    let tagLetters = Number(document.getElementById("letters").value);
    let uniqueTags = Number(document.getElementById("unique").valueAsNumber);
-   console.log(tagLetters, uniqueTags);
    let vImages;
    if (hImages > itemsNow) hImages = itemsNow;
    document.getElementById("numberH").value = hImages;
-   if (hImages == "") {
+
+   if (hImages == "" && hImages != 0) {
       hImages = itemsNow;
       document.getElementById("numberH").value = hImages;
    }
+
    vImages = itemsNow - hImages;
-   if (hImages == "1.01") {
+
+   if (hImages < 1) {
       hImages = 0;
       vImages = itemsNow;
       document.getElementById("numberH").value = hImages;
       document.getElementById("numberV").value = vImages;
    }
+
    if (uniqueTags == "" || uniqueTags > 100 || uniqueTags < 25) {
       uniqueTags = 50;
       document.getElementById("unique").valueAsNumber = uniqueTags;
@@ -113,6 +174,7 @@ function generateDocumnet() {
    if (itemsNow < smallLength || engine == 1) {
    } else {
       statusP.innerText = "Splitting the job and collecting data...";
+      toast("Splitting the job and collecting data...");
 
       split(itemsNow, 100, numbersARRAY);
       if (hImages == 0) {
@@ -133,11 +195,12 @@ function generateDocumnet() {
    }
 
    console.log(hImages + "   " + vImages);
-
+   toast("The generator is now starting, please wait until the generator completes.");
    startThreads(itemsNow, minTags, maxTags, hImages, vImages, tagLetters, uniqueTags, engine);
    console.time();
    start = Date.now();
    statusP.innerText = "Validating finished successfully!";
+   toast("Validating finished successfully!");
 }
 
 let response;
@@ -270,6 +333,7 @@ if (typeof Worker !== "undefined") {
       worker99 = new Worker("./worker.js");
       worker100 = new Worker("./worker.js");
 
+
       defaultWorker.onmessage = defaultHasCompleted;
 
       worker1.onmessage = workerHasCompleted;
@@ -387,6 +451,7 @@ if (typeof Worker !== "undefined") {
             unique: perqind(length, unique),
          });
       } else {
+         toast("Starting Workers...")
          statusP.innerText = "Starting workers...";
          worker1.postMessage({
             id: 1,
@@ -1397,10 +1462,12 @@ if (typeof Worker !== "undefined") {
          workerSave(e.data.id);
          prog.value += lengthV;
          statusP.innerText = "Completing data transfer from worker" + e.data.id + "...";
+         toast("Worker " + e.data.id + " has completed his job.")
       }
 
       function defaultHasCompleted(e) {
          statusP.innerText = "Getting data from all workers...";
+         toast("All workers have completed their jobs.")
          ReturnedText += e.data.result;
          nameOfGenerated = numeral(length).format("0a");
          nameOfHorizontal = numeral(h).format("0a");
@@ -1418,7 +1485,7 @@ if (typeof Worker !== "undefined") {
          console.timeEnd();
          end = Date.now();
          time = (end - start) / 1000;
-         Swal.fire("Generated successfully in " + time + " seconds.");
+         toast("Generated successfully in " + time + " seconds.", 10000);
          let arrayEMPTY = [];
          numbersARRAY = arrayEMPTY;
          horizontalARRAY = arrayEMPTY;
@@ -1734,6 +1801,7 @@ if (typeof Worker !== "undefined") {
                break;
          }
          if (doneWorkers.length === 100) {
+            toast("Generating download link...");
             nameOfGenerated = numeral(length).format("0a");
             nameOfHorizontal = numeral(h).format("0a");
             nameOfVertical = numeral(v).format("0a");
@@ -1745,13 +1813,14 @@ if (typeof Worker !== "undefined") {
             link.href = fileUrl;
             link.click();
             statusP.innerText = "Saving data...";
+            toast("Saved successfully!");
             document.getElementById("container").classList.remove("hidden");
             document.getElementById("fastGenerate").classList.remove("hidden");
             document.getElementById("loading").style.display = "none";
             console.timeEnd();
             end = Date.now();
             time = (end - start) / 1000;
-            Swal.fire("Generated successfully in " + time + " seconds.");
+            toast("Generated successfully in " + time + " seconds.", 10000);
             let arrayEMPTY = [];
             numbersARRAY = arrayEMPTY;
             horizontalARRAY = arrayEMPTY;
@@ -1763,11 +1832,13 @@ if (typeof Worker !== "undefined") {
 } else {
    // No Web Worker support..
    alert("Your browser does not support the Web Worker. Please upgrade to Chrome or Firefox!");
+   toast("Your browser does not support the Web Worker. Please upgrade to Chrome or Firefox!", 10000);
    running = false;
 }
 
 function shuffleLines(input) {
    statusP.innerText = "Formating data...";
+   toast("Formating data...");
    // Split the input into an array of lines
    const lines = input.split("\n");
 
@@ -1789,6 +1860,7 @@ function shuffleLines(input) {
 
 function loadWEB(url) {
    if (url == "image") {
+      toast("Redirecting to " + url + "...");
       window.location.href = window.location.href + "image/";
    } else {
       location.reload();
